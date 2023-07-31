@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#update if needed
+sudo pacman -Syu || exit 1
+#install zsh
+which zsh || sudo pacman -S zsh
+#install utilities
+which exa || sudo pacman -S exa & \
+which bat || sudo pacman -S bat & \
+which duf || sudo pacman -S duf & \
+which rg || sudo pacman -S ripgrep & \
+which fzf || sudo pacman -S fzf & \ 
+which neofetch || sudo pacman -S neofetch & \
+which glances || sudo pacman -S glances
+which arp || sudo pacman -S net-tools
+#install text editors and enable nano syntax highlighting
+which nano || sudo pacman -S nano && find /usr/share/nano/ -iname "*.nanorc" -exec echo include {} \; >> ~/.nanorc
+which vim || sudo pacman -S vim & \
+which emacs || sudo pacman -S emacs-nox
+
+printf "runtime defaults.vim
+set tabstop=4
+set shiftwidth=4" > ~/.vimrc
+
+#install trizen AUR package manager
+sudo pacman -Sy --needed base-devel git 
+if ! which trizen; then
+    git clone https://aur.archlinux.org/trizen.git
+    cd trizen
+    mkpkg -si
+    cd ..
+fi
+
+#install wttr front-end tool
+which wttr || sudo curl -o /usr/local/bin/wttr https://raw.githubusercontent.com/pingej77/wttr/main/wttr && sudo chmod +x /usr/local/bin/wttr
+#install net info
+which netinfo || sudo curl -o /usr/local/bin/netinfo https://raw.githubusercontent.com/pingej77/netinfo/main/netinfo && sudo chmod +x /usr/local/bin/netinfo
+

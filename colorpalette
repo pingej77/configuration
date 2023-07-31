@@ -1,0 +1,16 @@
+#!/bin/bash
+lineEnd=$(tput cols)
+width=0
+echo "colors 0-7 when bold += 8"
+for i in {0..255}
+do
+    (( $width+5 >= $lineEnd )) && echo "" && width=0
+    let width+=5
+    tput setaf $i
+    [[ $i -lt 100 ]] && printf " "
+    echo -n "${i}█"
+    [[ $i -lt 10 ]] && printf "█"
+    printf " "
+done
+echo ""
+tput sgr0
