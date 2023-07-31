@@ -27,7 +27,7 @@ sudo pacman -Sy --needed base-devel git
 if ! which trizen; then
     git clone https://aur.archlinux.org/trizen.git
     cd trizen
-    mkpkg -si
+    makepkg -si
     cd ..
 fi
 
