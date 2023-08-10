@@ -70,7 +70,7 @@ alias neofetch='neofetch --color_blocks off'" \
 #turn on cdspell for bash, plus autocorrection and case-insensitive cd for zsh
 printf "shopt -s cdspell" >> $HOME/.bashrc
 printf "setopt correct" >> $HOME/.zshrc
-cat << 'EOT' >> $HOME/temptest
+cat << 'EOT' >> $HOME/.zshrc
 function cd() {
         dir_found=false
         if (builtin cd $1 2> /dev/null) 
