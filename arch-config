@@ -70,22 +70,27 @@ alias neofetch='neofetch --color_blocks off'" \
 #turn on cdspell for bash, plus autocorrection and case-insensitive cd for zsh
 printf "shopt -s cdspell" >> $HOME/.bashrc
 printf "setopt correct" >> $HOME/.zshrc
-echo 'function cd() {
+cat << 'EOT' >> $HOME/temptest
+function cd() {
         dir_found=false
         if (builtin cd $1 2> /dev/null) 
         then
                 builtin cd $1
                 dir_found=true
         else
-        directories=($(find . -maxdepth 1 -type d | sed -e 's|\./||'))
-        for dir in ${directories[@]}
+        IFS=$'\n'
+		directories=($(find . -maxdepth 1 -type d | sed -e 's|\./||'))
+        IFS=' '
+		for dir in ${directories[@]}
         do
-                if [[ ${(L)dir} == ${(L)1} ]]; then
-                echo $dir
-                builtin cd $dir
+                if [[ ${(L)dir} == ${(L)*} ]]; then
+                echo "$dir"
+                builtin cd "$dir"
                 dir_found=true
                 fi
         done
         fi
-        [[ $dir_found != true ]] && echo "cd: no such file or directory: $1'
-}" >> $HOME/.zshrc
+        [[ $dir_found != true ]] && echo "cd: no such file or directory: $*
+} 
+EOT
+
