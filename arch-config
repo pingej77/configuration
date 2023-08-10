@@ -19,9 +19,11 @@ which nano || sudo pacman -S nano && find /usr/share/nano/ -iname "*.nanorc" -ex
 which vim || sudo pacman -S vim & \
 which emacs || sudo pacman -S emacs-nox
 
-printf "runtime defaults.vim
+printf 'runtime defaults.vim
 set tabstop=4
-set shiftwidth=4" > ~/.vimrc
+set shiftwidth=4
+set number
+highlight LineNr ctermfg=grey' > ~/.vimrc
 
 #install trizen AUR package manager
 sudo pacman -Sy --needed base-devel git 
