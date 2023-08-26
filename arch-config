@@ -131,8 +131,8 @@ command ss $* | \
 		sed -E "2,$ s/([g-z]):/\1${port}:/g" | \
 		sed -E "2,$ s/(\.[0-9]*):/\1${port}:/g" | \
 		sed -e "s/\*:/\*${port}:/g" | \
-        sed "s/tcp/${tcp}&/" | \
-        sed "s/udp/${udp}&/" | \
+        sed -e "s/tcp\s/${tcp}&/" | \
+        sed -e "s/udp\s/${udp}&/" | \
 		sed "s/icmp/${icmp}&/" | \
 		sed "s/dccp/${dccp}&/" | \
 		sed "s/sctp/${sctp}&/" | \
