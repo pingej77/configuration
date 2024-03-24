@@ -13,16 +13,16 @@ shift $((OPTIND - 1))
 #return total size for working directory
 tput bold
 echo $PWD
-du -shc | tail -1
+du -shcx | tail -1
 tput sgr0
 [[ $totalonly == true ]] && exit 0
 #for standard Unix/POSIX sorting
 export LC_ALL=C
 #include or exclude hidden files and pull in du information, sorted alphabetically
 if [[ $hidden == true ]]; then
-    list=$(du -ah --max-depth=1 | sort -k 2)
+    list=$(du -ahx --max-depth=1 | sort -k 2)
 else
-    list=$(du -ah --max-depth=1 --exclude="*./.*" | head -n -1 | sort -k 2)
+    list=$(du -ahx --max-depth=1 --exclude="*./.*" | head -n -1 | sort -k 2)
 fi
 #exit if no format
 [[ $noformat == true ]] && printf "$list\n" | sed 's|\./||' && exit 0
