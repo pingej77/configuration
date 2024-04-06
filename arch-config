@@ -94,7 +94,9 @@ function cd() {
         fi
         [[ $dir_found != true ]] && echo "cd: no such file or directory: $*
 } 
+
 EOT
+
 cat << 'EOT' >> $HOME/.zshrc
 function ss {
 yellow=$(tput setaf 226) #for not-yet connected handshakes
