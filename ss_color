@@ -1,0 +1,45 @@
+function ss {
+yellow=$(tput setaf 226) #for not-yet connected handshakes
+blue=$(tput setaf 27)	#for listening
+green=$(tput setaf 2)	#for established
+red=$(tput setaf 9)		#for unconnected and closed
+grey=$(tput setaf 8)	#for closing/timeout connections
+tcp=$(tput setaf 3)
+udp=$(tput setaf 28)
+icmp=$(tput setaf 50)
+sctp=$(tput setaf 12)
+dccp=$(tput setaf 204)
+ipv6=$(tput setaf 4)
+ipv4=$(tput setaf 5)
+port=$(tput setaf 11)
+iface=$(tput setaf 6)
+reset=$(tput sgr0)
+
+command ss $* | \
+		sed -e "s/\[/${ipv6}\[/g" | \
+        awk -v hdr=$(tput bold; tput smul) -v rst=$(tput sgr0) 'NR == 1{$0 = hdr$0rst} 1' | \
+        sed "s/ESTAB/${green}&/g" | \
+        sed "s/UNCONN/${red}&/g" | \
+		sed "s/CLOSED/${red}&/" | \
+        sed "s/LISTEN/${blue}&/g" | \
+        sed "s/TIME-WAIT/${grey}&/g" | \
+        sed -E "s/FIN-WAIT.?/${grey}&/g" | \
+        sed "s/CLOSE-WAIT/${grey}&/g" | \
+        sed "s/LAST-ACK/${grey}&/g" | \
+        sed "s/CLOSING/${grey}&/g" | \
+        sed "s/SYN-SENT/${yellow}&/g" | \
+        sed "s/SYN-RECV/${yellow}&/g" | \
+        sed -e "s/\]:/\]${port}:/g" | \
+		sed -E "2,$ s/([g-z]):/\1${port}:/g" | \
+		sed -E "2,$ s/(\.[0-9]*):/\1${port}:/g" | \
+		sed -e "s/\*:/\*${port}:/g" | \
+        sed -e "s/tcp\s/${tcp}&/" | \
+        sed -e "s/udp\s/${udp}&/" | \
+		sed "s/icmp/${icmp}&/" | \
+		sed "s/dccp/${dccp}&/" | \
+		sed "s/sctp/${sctp}&/" | \
+        sed -e "s/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/${ipv4}&${reset}/g" | \
+        sed -E "s/(%[^:]*):/${iface}\1${port}:/" | \
+		sed -e "2,$ s/\s/${reset}&/g" | \
+		sed -E "2,$ s/:\(/${reset}:\(/g"
+	}
