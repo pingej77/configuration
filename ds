@@ -19,8 +19,8 @@ tput sgr0
 [[ $totalonly == true ]] && exit 0
 #for standard Unix/POSIX sorting
 export LC_ALL=C
-#include or exclude hidden files and pull in du information, sorted alphabetically
 
+#sort by size if -s specified, otherwise do alphabetically
 if [[ $sortSize == true ]]; then
 	sortField=1
 	sortOpt="-hr"
@@ -29,6 +29,7 @@ else
 	sortOpt=''
 fi
 
+#get du information, excluding hidden unless -a specified
 if [[ $hidden == true ]]; then
     list=$(du -ahx --max-depth=1 | sort $sortOpt -k $sortField)
 else
@@ -56,6 +57,8 @@ pipes=$(find . -maxdepth 1 -type p | sed -e 's|\./||')
 blockdevs=$(find . -maxdepth 1 -type b | sed -e 's|\./||')
 chardevs=$(find . -maxdepth 1 -type c | sed -e 's|\./||')
 
+
+IFS=$'\n'
 #format directories
 for dir in ${directories[@]}
 do
