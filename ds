@@ -1,10 +1,11 @@
 #!/bin/bash
 
-while getopts "ant" opt; do
+while getopts "ants" opt; do
     case $opt in
     a) hidden=true ;;
     n) noformat=true ;;
     t) totalonly=true ;;
+    s) sortSize=true ;;
     esac
 done
 shift $((OPTIND - 1))
@@ -19,10 +20,19 @@ tput sgr0
 #for standard Unix/POSIX sorting
 export LC_ALL=C
 #include or exclude hidden files and pull in du information, sorted alphabetically
-if [[ $hidden == true ]]; then
-    list=$(du -ahx --max-depth=1 | sort -k 2)
+
+if [[ $sortSize == true ]]; then
+	sortField=1
+	sortOpt="-hr"
 else
-    list=$(du -ahx --max-depth=1 --exclude="*./.*" | head -n -1 | sort -k 2)
+	sortField=2
+	sortOpt=''
+fi
+
+if [[ $hidden == true ]]; then
+    list=$(du -ahx --max-depth=1 | sort $sortOpt -k $sortField)
+else
+    list=$(du -ahx --max-depth=1 --exclude="*./.*" | head -n -1 | sort $sortOpt -k $sortField)
 fi
 #exit if no format
 [[ $noformat == true ]] && printf "$list\n" | sed 's|\./||' && exit 0
