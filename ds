@@ -1,11 +1,12 @@
 #!/bin/bash
 
-while getopts "ants" opt; do
+while getopts "antsr" opt; do
     case $opt in
     a) hidden=true ;;
     n) noformat=true ;;
     t) totalonly=true ;;
     s) sortSize=true ;;
+    r) sortRev=true ;;
     esac
 done
 shift $((OPTIND - 1))
@@ -21,13 +22,20 @@ tput sgr0
 export LC_ALL=C
 
 #sort by size if -s specified, otherwise do alphabetically
+#default: sort A-Z and big-small
+#reverse: sort Z-A and small-big
 if [[ $sortSize == true ]]; then
 	sortField=1
-	sortOpt="-hr"
+	sortOpt="-h"
+	[[ $sortRev != true ]] && sortOpt+="r"
+elif [[ $sortRev == true ]]; then
+	sortField=2
+	sortOpt="-fr"
 else
 	sortField=2
-	sortOpt=''
+	sortOpt='-f'
 fi
+
 
 #get du information, excluding hidden unless -a specified
 if [[ $hidden == true ]]; then
@@ -48,17 +56,16 @@ fmtsok=$(tput setaf 2)
 fmtfifo=$(tput setaf 3)
 fmtdev=$(tput setaf 3; tput bold)
 
-#get different types in arrays
-directories=$(find . -maxdepth 1 -type d | tail -n +2 | sed -e 's|\./||')
-executables=$(find . -maxdepth 1 -type f -perm -111 | sed -e 's|\./||')
-symlinks=$(find . -maxdepth 1 -type l | sed -e 's|\./||')
-sockets=$(find . -maxdepth 1 -type s | sed -e 's|\./||')
-pipes=$(find . -maxdepth 1 -type p | sed -e 's|\./||')
-blockdevs=$(find . -maxdepth 1 -type b | sed -e 's|\./||')
-chardevs=$(find . -maxdepth 1 -type c | sed -e 's|\./||')
-
-
 IFS=$'\n'
+#get different types in arrays
+directories=($(find . -maxdepth 1 -type d | tail -n +2 | sed -e 's|\./||'))
+executables=($(find . -maxdepth 1 -type f -perm -111 | sed -e 's|\./||'))
+symlinks=($(find . -maxdepth 1 -type l | sed -e 's|\./||'))
+sockets=($(find . -maxdepth 1 -type s | sed -e 's|\./||'))
+pipes=($(find . -maxdepth 1 -type p | sed -e 's|\./||'))
+blockdevs=($(find . -maxdepth 1 -type b | sed -e 's|\./||'))
+chardevs=($(find . -maxdepth 1 -type c | sed -e 's|\./||'))
+
 #format directories
 for dir in ${directories[@]}
 do
