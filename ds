@@ -52,7 +52,7 @@ fmtdir=$(tput setaf 4; tput bold)
 fmtexe=$(tput setaf 2; tput bold)
 fmtsym=$(tput setaf 6; tput bold)
 fmttar=$(tput setaf 1; tput bold)
-fmtsok=$(tput setaf 2)
+fmtsok=$(tput setaf 5; tput bold)
 fmtfifo=$(tput setaf 3)
 fmtdev=$(tput setaf 3; tput bold)
 
