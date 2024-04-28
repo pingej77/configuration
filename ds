@@ -1,5 +1,16 @@
 #!/bin/bash
 
+if [[ $1 == '--help' || $1 == '-?' ]]; then
+	echo "ds lists directory and file size in a manner similar to ls with color-coding"
+	echo "Size includes all files and subdirectories within a given directory"
+	echo -e "\nOptions:"
+	echo -e "\t-a will show all files, including hidden files"
+	echo -e "\t-n will not format the output: no color coding or file type symbols"
+	echo -e "\t-t will show the total size of the current directory only"
+	echo -e "\t-s will sort by size instead of alphabetically"
+	echo -e "\t-r will reverse the sort order from A-Z to Z-A or from large-small to small-large with -s option"
+	exit
+fi
 while getopts "antsr" opt; do
     case $opt in
     a) hidden=true ;;
@@ -46,7 +57,7 @@ fi
 #exit if no format
 [[ $noformat == true ]] && printf "$list\n" | sed 's|\./||' && exit 0
 
-#formating variables
+#formating variables per ls standard (blue dirs, yellow devs, green exes, etc.)
 reset=$(tput sgr0)
 fmtdir=$(tput setaf 4; tput bold)
 fmtexe=$(tput setaf 2; tput bold)
@@ -57,41 +68,41 @@ fmtfifo=$(tput setaf 3)
 fmtdev=$(tput setaf 3; tput bold)
 
 IFS=$'\n'
-#get different types in arrays
+#get different file types in arrays
 directories=($(find . -maxdepth 1 -type d | tail -n +2 | sed -e 's|\./||'))
 executables=($(find . -maxdepth 1 -type f -perm -111 | sed -e 's|\./||'))
+blockdevs=($(find . -maxdepth 1 -type b | sed -e 's|\./||'))
+chardevs=($(find . -maxdepth 1 -type c | sed -e 's|\./||'))
 symlinks=($(find . -maxdepth 1 -type l | sed -e 's|\./||'))
 sockets=($(find . -maxdepth 1 -type s | sed -e 's|\./||'))
 pipes=($(find . -maxdepth 1 -type p | sed -e 's|\./||'))
-blockdevs=($(find . -maxdepth 1 -type b | sed -e 's|\./||'))
-chardevs=($(find . -maxdepth 1 -type c | sed -e 's|\./||'))
 
-#format directories
+#format directories (blue, bold, /)
 for dir in ${directories[@]}
 do
     list=$(printf "$list" | sed "s|\./${dir}$|${fmtdir}&$reset/|")
 done
-#format executables
+#format executables (green, bold, *)
 for exe in ${executables[@]}
 do
     list=$(printf "$list" | sed "s|\./${exe}$|${fmtexe}&$reset\*|")
 done
-#format symbolic links
+#format symbolic links (teal, bold, @)
 for lnk in ${symlinks[@]}
 do
     list=$(printf "$list" | sed "s|\./${lnk}$|${fmtsym}&$reset@|")
 done
-#format sockets
+#format sockets (purple, bold, =)
 for sok in ${sockets[@]}
 do
     list=$(printf "$list" | sed "s|\./${sok}$|${fmtsok}&$reset=|")
 done
-#format named pipes/FIFOs
+#format named pipes/FIFOs (yellow, |)
 for pipe in ${pipes[@]}
 do
     list=$(printf "$list" | sed "s]\./${pipe}$]${fmtfifo}&$reset|]")
 done
-#format devices
+#format devices (yellow, bold)
 for dev in ${blockdevs[@]}
 do
     list=$(printf "$list" | sed "s|\./${dev}$|${fmtdev}&$reset|")
@@ -105,4 +116,9 @@ list=$(printf "$list" | sed "s|\./.*\.tar.*|${fmttar}&$reset|")
 list=$(printf "$list" | sed "s|\./.*\.zip.*|${fmttar}&$reset|")
 list=$(printf "$list" | sed "s|\./.*\.7z.*|${fmttar}&$reset|")
 list=$(printf "$list" | sed "s|\./.*\.gz.*|${fmttar}&$reset|")
+list=$(printf "$list" | sed "s|\./.*\.xz.*|${fmttar}&$reset|")
+list=$(printf "$list" | sed "s|\./.*\.bz2.*|${fmttar}&$reset|")
+list=$(printf "$list" | sed "s|\./.*\.lz.*|${fmttar}&$reset|")
+list=$(printf "$list" | sed "s|\./.*\.rar.*|${fmttar}&$reset|")
+
 printf "$list\n" | sed 's|\./||'
