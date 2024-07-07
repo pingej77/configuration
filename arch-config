@@ -92,7 +92,7 @@ function cd() {
                 fi
         done
         fi
-        [[ $dir_found != true ]] && echo "cd: no such file or directory: $*
+        [[ $dir_found != true ]] && echo "cd: no such file or directory: $*"
 } 
 
 EOT
