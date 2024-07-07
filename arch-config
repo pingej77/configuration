@@ -2,22 +2,15 @@
 
 #update if needed
 sudo pacman -Syu || exit 1
-#install zsh
+#install zsh and vim
 which zsh || sudo pacman -S zsh
+which vim || sudo pacman -S vim
 #install utilities
-which exa || sudo pacman -S exa & \
-which bat || sudo pacman -S bat & \
-which duf || sudo pacman -S duf & \
-which rg || sudo pacman -S ripgrep & \
-which fzf || sudo pacman -S fzf & \ 
-which neofetch || sudo pacman -S neofetch & \
-which glances || sudo pacman -S glances
-which arp || sudo pacman -S net-tools
-which dig || sudo pacman -S extra/bind
-#install text editors and enable nano syntax highlighting
+sudo pacman -S eza bat duf ripgrep fzf neofetch glances htop net-tools extra/bind iw
+
+#install nano and enable nano syntax highlighting
 which nano || sudo pacman -S nano && find /usr/share/nano/ -iname "*.nanorc" -exec echo include {} \; >> ~/.nanorc
-which vim || sudo pacman -S vim & \
-which emacs || sudo pacman -S emacs-nox
+
 
 printf 'runtime defaults.vim
 set tabstop=4
