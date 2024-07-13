@@ -59,7 +59,7 @@ alias duf='duf -hide special'
 alias ECHO='echo'
 alias ping='ping -c 3'
 alias PING='ping'
-alias neofetch='neofetch --color_blocks off'" \
+alias neofetch='neofetch --color_blocks off' \n" \
 | tee -a $HOME/.bashrc >> $HOME/.zshrc
 
 #turn on cdspell for bash, plus autocorrection and case-insensitive cd for zsh
