@@ -9,9 +9,9 @@ which vim || sudo pacman -S vim
 sudo pacman -S eza bat duf ripgrep fzf neofetch glances htop net-tools extra/bind iw
 
 #install nano and enable nano syntax highlighting
-which nano || sudo pacman -S nano && find /usr/share/nano/ -iname "*.nanorc" -exec echo include {} \; >> ~/.nanorc
+sudo pacman -S nano && find /usr/share/nano/ -iname "*.nanorc" -exec echo include {} \; >> ~/.nanorc
 
-
+#create vimrc file with preferred settings
 printf 'runtime defaults.vim
 set tabstop=4
 set shiftwidth=4
